@@ -37,7 +37,7 @@
     <link rel="alternate" type="application/rss+xml" title="Hexo" href="/atom.xml">
     
 
-    <link rel="canonical" href="http://yoursite.com"/>
+    <link rel="canonical" href="http://yoursite.com/安卓随笔1.html"/>
 
     
     <link rel="author" href="https://www.google.com/+LenboMa"/>
@@ -153,30 +153,56 @@
 
     <div class="content-wrapper">
         <div class="content-wrapper__inner">
-            <div class="main-post-list">
-    
-  <ol class="post-list">
-  
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/04/03/hello-world/" title="link to post.title">Hello World</a></h2>
-      <p class="excerpt">
-    
-      Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick StartCreate a new post1$ hexo new &quot;My New Post&quot;
-M
-    &hellip;
-      </p>
-      <div class="post-list__meta"><time datetime="2016-04-03T08:58:27.027Z" class="post-list__meta--date date">2016-04-03</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;</span><a class="btn-border-small" href="/2016/04/03/hello-world/">继续阅读</a></div>
-      <hr class="post-list__divider" />
-    </li>
-  
-    
-  </ol>
+            <article class="post-container post-container--single">
 
+  <header class="post-header">
+    <h1 class="post-title"></h1>
+  </header>
 
+  <section class="post">
+    <p>安卓随笔1<br>-</p>
+<h2 id=""><a href="#" class="headerlink" title="**"></a>**</h2><pre><code>刘天骜
+</code></pre><p>（一）AndroidManifest.xml<br>首先是比较好写的配置文件。<br>这里面主要写一些配置相关的东西，多是权限、添加Activity之类的。<br>权限：比如要写扫描本地歌曲了，你就得添加sd卡的扫描权限，如下：<br>//在SD卡中创建与删除文件权限</p>
+<pre><code>&lt;uses-permission
+    android:name=&quot;android.permission.MOUNT_UNMOUNT_FILESYSTEMS&quot;&gt;
+&lt;/uses-permission&gt;
+</code></pre><p>//向SD卡中写入数据权限</p>
+<pre><code>&lt;uses-permission
+    android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;&gt;
+&lt;/uses-permission&gt;
+</code></pre><p>比如要添加网络权限：</p>
+<pre><code>&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot;/&gt;
+</code></pre><p>Application——<br>Activity：若需要跳转到Activity_two，则需添加：</p>
+<pre><code>&lt;activity android:name=&quot;.Activity_two&quot;
+    &gt;&lt;/activity&gt;
+</code></pre><p>service：若要挂后台了，也得在配置文件中添加service：</p>
+<pre><code>&lt;service android:name=&quot;.PlayerService&quot;&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name=&quot;android.service.PlayerService&quot;/&gt;
+    &lt;/intent-filter&gt;
+&lt;/service&gt;
+</code></pre><p>静态广播接收器也需要申明action名字，等等……………………</p>
+<p>（二）res<br>drawable：写一些布局文件里的style或是button点击切换背景之类的xml文件。<br>mipmap：各种图片文件放在这里。<br>values：颜色，名字，文字格式等等东西都可以打包写好存在这里。<br>layout：布局文件。里面用于写APP中的所有页面及页面布局。</p>
+<p>主要说下布局。<br>布局主界面为activity_main。<br>布局形式大致分线性布局和相对布局。一般都套接使用。<br>目前listview， fragment，webview比较复杂。<br>fragment的话，写出fragment框架在哪儿和大小之后，需另建一个布局单独写fragment里面的布局，然后通过java文件切换及各种命令。<br>webview是写网络请求等用的，请求到的网页就用webview展示，展示过程还是在java文件中。<br>listview依然是需要另建一个list_item做每一条的布局，然后再在java文件中处理。</p>
+<p>（三）java<br>java主文件是MainActivity。<br>MainActivity：这是主要执行的java文件，创建时就需设置展示页面，一般就是activity_main了。</p>
+<pre><code>setContentView(R.layout.activity_main);
+</code></pre><p>然后再在其中处理。<br>比如listview：<br>先要利用ID找到布局文件中的listview，然后用一个数组获取到需要设置给listview的值，进而将这个数组通过adapter赋值给listview。然后APP里就有我们想要的东西了。<br>所以adapter还得自己写。<br>adapter：继承BaseAdapter。然后改写其中方法。先要初始化。然后写<br>View getView<br>这个方法。<br>在其中我们需要先获得list_item里面布局的文件id，然后才能为其赋值。通过初始化传来的数据进行赋值。最后</p>
+<pre><code>return convertView;
+</code></pre><p>然后就是各种java文件了。比如音乐播放器需要挂一个后台则要用service。<br>service：申明一个类，然后继承service。如要播放，则需如下：<br>MediaPlayer mediaPlayer<br>用mediaPlayer进行播放。<br>然后再service进行各种方法的编写，实现暂停播放等功能。</p>
+<p>最后在主java文件中start service。</p>
+<p>其中也许会用到广播：<br>传递值的时候只需要：</p>
+<pre><code>sendBroadcast(intent);
+</code></pre><p>接收的话需要写一个广播接受器。重写onReceive就好了。</p>
+<p>notification：运用如下方法实现自定义notification。<br>RemoteViews mRemoteViews<br>然后创建notification<br>NotificationCompat.Builder<br>运用builder进行各种初始设置等。<br>运用pendingintent可以实现按钮点击发送广播等功能。<br>最后，展示广播：</p>
+<pre><code>//获取通知管理器对象
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());
+</code></pre><p>然后就是新建activity了：<br>如需跳转，可直接在原activity中start 新的activity，利用intent跨页面传值。<br>若有需要可在新activity中重写返回键等各种手机物理按键。实现想要的效果。</p>
+<p>其中传值方法其实也有一些。比如可以使用全局变量。需要在配置文件中重写Application名字。然后新建Java文件存储全局变量，继承Application。</p>
+<p>需要使用框架的话则在Gradle Scripts中的build.gradle文件中添加<br>compile ‘com.efan:basecmlib:1.3.16’<br>这样一句话。然后从网络上将框架拉下来。<br>网络请求及框架详情请见下次笔记。</p>
 
-</div>
+  </section>
+</article>
 
 
 
